@@ -1,14 +1,16 @@
 import React from "react";
 import "./App.css";
-import Login from "./components/Login";
+import Login from "./containers/Login";
 import { Route, Switch } from "react-router-dom";
-import SignUp from "./components/SignUp";
+import SignUp from "./containers/SignUp";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
     <div className="App">
       <Switch>
         <Route path="/signUp" component={SignUp} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="" component={Login} />
       </Switch>
     </div>

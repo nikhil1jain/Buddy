@@ -4,36 +4,34 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
-import CSSBaseline from "@material-ui/core/CSSBaseline";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { buddySaga } from "./store/saga";
 import Reducer from "./store/reducer";
+import thunk from "redux-thunk";
+
+const composeEnhancers =
+  process.env.NODE_ENV === "development"
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    : null || compose;
 
 const sagaMiddleware = createSagaMiddleware();
 
-const composeEnhancers =
-  typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
-      })
-    : compose;
-
-const enhancer = composeEnhancers(applyMiddleware(sagaMiddleware));
-
-const store = createStore(Reducer, enhancer);
+const store = createStore(
+  Reducer,
+  composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
+);
 
 sagaMiddleware.run(buddySaga);
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <CSSBaseline />
-      <Provider store={store}>
+    <Provider store={store}>
+      <BrowserRouter>
         <App />
-      </Provider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +13,7 @@ import Grid from "@material-ui/core/Grid";
 // import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { authLogin } from "../store/actions";
 
 function Copyright() {
   return (
@@ -61,11 +63,41 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = (props) => {
   console.log("Login", props);
+  const { isLoggedIn } = props;
   const classes = useStyles();
+
+  const [emailData, setEmailData] = useState(null);
+  const [passwordData, setPasswordData] = useState(null);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      props.history.push("/dashboard");
+    }
+  }, [isLoggedIn]);
 
   const signUpHandler = () => {
     console.log("sign up button clicked");
     props.history.push("/signUp");
+  };
+
+  const emailFieldHandler = (event) => {
+    console.log("emailFieldHandler", event.target.value);
+    setEmailData(event.target.value);
+  };
+
+  const passwordFieldHandler = (event) => {
+    console.log("passwordFieldHandler", event.target.value);
+    setPasswordData(event.target.value);
+  };
+
+  const signInSubmitHandler = (event) => {
+    event.preventDefault();
+    let signInData = {
+      email: emailData,
+      password: passwordData,
+      isSignIn: true,
+    };
+    props.authLoginDispatch(signInData);
   };
 
   return (
@@ -91,6 +123,7 @@ const Login = (props) => {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={emailFieldHandler}
             />
             <TextField
               variant="outlined"
@@ -102,6 +135,7 @@ const Login = (props) => {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={passwordFieldHandler}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -113,6 +147,7 @@ const Login = (props) => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={signInSubmitHandler}
             >
               Sign In
             </Button>
@@ -138,4 +173,14 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+const mapDispatchToProps = (dispatch) => ({
+  authLoginDispatch: (payload) => dispatch(authLogin(payload)),
+});
+
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.isLoggedIn,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
