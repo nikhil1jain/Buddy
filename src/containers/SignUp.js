@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -49,9 +47,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignUp = (props) => {
-  const { signDataDispatch, errorMessage } = props;
+  const { signDataDispatch, errorMessage, isSignUpSuccess } = props;
   console.log("errorMessage", errorMessage);
   const classes = useStyles();
+
+  useEffect(() => {
+    if (isSignUpSuccess) {
+      props.history.push("/");
+    }
+  });
 
   const [emailData, setEmailData] = useState(null);
   const [passwordData, setPasswordData] = useState(null);
@@ -151,12 +155,6 @@ const SignUp = (props) => {
                 onChange={passwordDataHandler}
               />
             </Grid>
-            {/* <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid> */}
           </Grid>
           <Button
             type="submit"
@@ -180,6 +178,7 @@ const SignUp = (props) => {
             </Grid>
           </Grid>
         </form>
+        <p>After successful Sign up, you will be redirected to Login Page.</p>
       </div>
       <Box mt={5}>
         <Copyright />
@@ -195,6 +194,7 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = (state) => {
   return {
     errorMessage: state.signUpError,
+    isSignUpSuccess: state.isSignUpSuccess,
   };
 };
 

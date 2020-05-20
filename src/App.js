@@ -3,7 +3,7 @@ import "./App.css";
 import Login from "./containers/Login";
 import { Route, Switch } from "react-router-dom";
 import SignUp from "./containers/SignUp";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./containers/Dashboard";
 
 function App() {
   return (

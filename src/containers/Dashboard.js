@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -6,27 +7,27 @@ import Drawer from "@material-ui/core/Drawer";
 import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import { mainListItems, secondaryListItems } from "./ListItems";
-import ChatArea from "./ChatArea";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import UsersListComponent from "../components/UsersListComponent";
+import ChatArea from "../components/ChatArea";
+import ChatInput from "../components/ChatInput";
+import { postMessageData, refreshChat, logout } from "../store/actions";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Buddy App
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -115,17 +116,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Dashboard = () => {
+const Dashboard = (props) => {
+  console.log("userList", props.userList);
+  const {
+    userList,
+    loggedInUser,
+    isLoggedIn,
+    conversations,
+    postMessageDataDispatch,
+    refreshChatDispatch,
+    logoutDispatch,
+  } = props;
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      props.history.push("/");
+    }
+  });
+  useEffect(() => {
+    let timer;
+    if (isLoggedIn) {
+      timer = setInterval(() => {
+        refreshChatDispatch();
+      }, 5000);
+    }
+
+    return () => {
+      console.log("Dashboard Unmounted");
+      clearInterval(timer);
+    };
+  });
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const getLoggedInUserName = () => {
+    const userName = userList[loggedInUser.email].firstName;
+    return `${userName}'s Dashboard`;
+  };
+
+  const logoutButtonHandler = () => {
+    logoutDispatch();
+  };
+
+  const inputMessageData = (inputMsgData) => {
+    console.log(inputMsgData);
+    if (
+      userList &&
+      loggedInUser &&
+      loggedInUser.email &&
+      userList[loggedInUser.email].firstName
+    ) {
+      const msgObj = {
+        message: inputMsgData,
+        loggedInUser: loggedInUser.email,
+        name: userList[loggedInUser.email].firstName,
+      };
+      postMessageDataDispatch(msgObj);
+    }
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -153,12 +206,15 @@ const Dashboard = () => {
             noWrap
             className={classes.title}
           >
-            Dashboard
+            {userList &&
+            loggedInUser &&
+            loggedInUser.email &&
+            userList[loggedInUser.email]
+              ? getLoggedInUserName()
+              : "Dashboard"}
           </Typography>
           <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
+            <ExitToAppIcon onClick={logoutButtonHandler} />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -175,32 +231,25 @@ const Dashboard = () => {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        {/* <List> */}
+        <UsersListComponent userList={userList} />
+        {/* </List> */}
         <Divider />
-        <List>{secondaryListItems}</List>
+        {/* <List>{secondaryListItems}</List> */}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-            {/* Chart */}
-
-            {/* <Grid item xs={12} md={8} lg={9}> */}
-            {/* <Paper className={fixedHeightPaper}> */}
-            {/* <Chart /> */}
-            {/* </Paper> */}
-            {/* </Grid> */}
-            {/* Recent Deposits */}
-            {/* <Grid item xs={12} md={4} lg={3}> */}
-            {/* <Paper className={fixedHeightPaper}> */}
-            {/* <Deposits /> */}
-            {/* </Paper> */}
-            {/* </Grid> */}
-            {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <ChatArea />
+                <ChatArea conversations={conversations} />
               </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              {/* <Paper className={classes.paper}> */}
+              <ChatInput inputMessageData={inputMessageData} />
+              {/* </Paper> */}
             </Grid>
           </Grid>
           <Box pt={4}>
@@ -212,4 +261,20 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+const mapDispatchToProps = (dispatch) => ({
+  // signDataDispatch: (payload) => dispatch(signUpAction(payload)),
+  postMessageDataDispatch: (payload) => dispatch(postMessageData(payload)),
+  refreshChatDispatch: () => dispatch(refreshChat()),
+  logoutDispatch: () => dispatch(logout()),
+});
+
+const mapStateToProps = (state) => {
+  return {
+    loggedInUser: state.loggedInUser,
+    userList: state.userList,
+    isLoggedIn: state.isLoggedIn,
+    conversations: state.conversations,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
