@@ -41,9 +41,8 @@ const ChatInput = (props) => {
     event.preventDefault();
     if (message !== "") {
       inputMessageData(message);
-    } else {
-      setMessage("");
     }
+    setMessage("");
   };
 
   return (

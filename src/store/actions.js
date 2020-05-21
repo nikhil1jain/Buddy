@@ -21,7 +21,6 @@ export const logout = () => {
 };
 
 export const authLogin = (payload) => {
-  console.log("authLoginAction ", payload);
   return {
     type: AUTH_LOGIN,
     payload,
@@ -43,7 +42,6 @@ export const authLoginError = (error) => {
 };
 
 export const signUpAction = (payload) => {
-  console.log("signUpAction", payload);
   return {
     type: SIGN_UP_ACTION,
     payload,
@@ -51,7 +49,6 @@ export const signUpAction = (payload) => {
 };
 
 export const signUpSuccess = (payload) => {
-  console.log("signUpSuccess", payload);
   return {
     type: SIGN_UP_SUCCESS,
     payload,
@@ -80,7 +77,6 @@ export const updateUsersList = (payload) => {
 };
 
 export const updateConversationsList = (payload) => {
-  console.log("updateConversationsList", payload);
   return {
     type: UPDATE_CONVERSATIONS_LIST,
     payload,

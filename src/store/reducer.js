@@ -37,7 +37,6 @@ const reducer = (state = initialState, action) => {
         userId: action.payload.data.localId,
       });
     case SIGN_UP_ERROR:
-      console.log("action", action);
       return updateObject(state, { signUpError: action.error.message });
     case AUTH_LOGIN_ERROR:
       return updateObject(state, { signInError: action.error.message });

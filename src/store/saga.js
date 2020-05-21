@@ -21,7 +21,6 @@ function* getUserList() {
   const getUsersURL = "https://buddy-fc771.firebaseio.com/users.json";
   try {
     const getUsersResponse = yield axios.get(getUsersURL);
-    console.log("getUsersResponse", getUsersResponse);
     yield put(updateUsersList(getUsersResponse.data));
   } catch (error) {
     console.log("[Error]", error);
@@ -33,7 +32,6 @@ function* getConversationList() {
     "https://buddy-fc771.firebaseio.com/conversations.json";
   try {
     const getConversationData = yield axios.get(getConversationsURL);
-    console.log("getConversationData", getConversationData);
     yield put(updateConversationsList(getConversationData.data));
   } catch (error) {
     console.log("[Error]", error);
@@ -69,21 +67,21 @@ export function* signUpSaga(action) {
     password: action.payload.password,
     returnSecureToken: true,
   };
-  console.log("signUPAUthData", signUpAuthData);
   const URL =
     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBTa0Aedv1Me_JKpMfHRLHT1lGcajhRUWs";
   try {
     const response = yield axios.post(URL, signUpAuthData);
-    console.log("SignUp response", response);
     if (response.status === 200) {
       const data = {
-        ...action.payload,
+        email: action.payload.email,
+        firstName: action.payload.firstName,
+        isSignUp: action.payload.isSignUp,
+        lastName: action.payload.lastName,
       };
       yield put(signUpSuccess(data));
       try {
         const postURL = "https://buddy-fc771.firebaseio.com/users.json";
-        const updateUserResponse = yield axios.post(postURL, data);
-        console.log("updateUserResponse", updateUserResponse);
+        yield axios.post(postURL, data);
       } catch (error) {
         console.log("[Erro]", error);
       }
@@ -97,12 +95,10 @@ export function* signUpSaga(action) {
 }
 
 export function* postMessageSaga(action) {
-  console.log("postMessageSaga", action);
   try {
     const URL = "https://buddy-fc771.firebaseio.com/conversations.json";
     const postMessageResponse = yield axios.post(URL, action.payload);
     if (postMessageResponse.status === 200) {
-      console.log("postMessageResponse", postMessageResponse);
       const data = {
         [postMessageResponse.data.name]: {
           ...action.payload,
@@ -117,6 +113,7 @@ export function* postMessageSaga(action) {
 }
 
 export function* refreshChatSaga() {
+  yield getUserList();
   yield getConversationList();
 }
 

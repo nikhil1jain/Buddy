@@ -4,7 +4,6 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
-import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -13,7 +12,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -21,19 +19,6 @@ import UsersListComponent from "../components/UsersListComponent";
 import ChatArea from "../components/ChatArea";
 import ChatInput from "../components/ChatInput";
 import { postMessageData, refreshChat, logout } from "../store/actions";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Buddy App
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const drawerWidth = 240;
 
@@ -117,7 +102,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Dashboard = (props) => {
-  console.log("userList", props.userList);
   const {
     userList,
     loggedInUser,
@@ -143,7 +127,6 @@ const Dashboard = (props) => {
     }
 
     return () => {
-      console.log("Dashboard Unmounted");
       clearInterval(timer);
     };
   });
@@ -164,7 +147,6 @@ const Dashboard = (props) => {
   };
 
   const inputMessageData = (inputMsgData) => {
-    console.log(inputMsgData);
     if (
       userList &&
       loggedInUser &&
@@ -213,8 +195,8 @@ const Dashboard = (props) => {
               ? getLoggedInUserName()
               : "Dashboard"}
           </Typography>
-          <IconButton color="inherit">
-            <ExitToAppIcon onClick={logoutButtonHandler} />
+          <IconButton color="inherit" onClick={logoutButtonHandler}>
+            <ExitToAppIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -225,8 +207,8 @@ const Dashboard = (props) => {
         }}
         open={open}
       >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
+        <div className={classes.toolbarIcon} onClick={handleDrawerClose}>
+          <IconButton>
             <ChevronLeftIcon />
           </IconButton>
         </div>
@@ -252,9 +234,6 @@ const Dashboard = (props) => {
               {/* </Paper> */}
             </Grid>
           </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
         </Container>
       </main>
     </div>

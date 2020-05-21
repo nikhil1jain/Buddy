@@ -9,7 +9,6 @@ import Typography from "@material-ui/core/Typography";
 
 const message = (props) => {
   const { classes, messageDetails } = props;
-  console.log("messageDetails", messageDetails);
   return (
     <React.Fragment>
       <ListItem alignItems="flex-start">

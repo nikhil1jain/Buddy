@@ -21,12 +21,8 @@ const ChatArea = (props) => {
   return (
     <List className={classes.root}>
       {conversations
-        ? Object.values(conversations).map((message) => (
-            <Message
-              key={message.email}
-              classes={classes}
-              messageDetails={message}
-            />
+        ? Object.values(conversations).map((message, index) => (
+            <Message key={index} classes={classes} messageDetails={message} />
           ))
         : "No Conversation"}
     </List>

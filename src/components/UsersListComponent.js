@@ -12,7 +12,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserListComponent = (props) => {
-  console.log("usersListComponent", props);
   const { userList } = props;
   const classes = useStyles();
 

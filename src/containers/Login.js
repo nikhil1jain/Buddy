@@ -73,7 +73,6 @@ const Login = (props) => {
   });
 
   const signUpHandler = () => {
-    console.log("sign up button clicked");
     props.history.push("/signUp");
   };
 

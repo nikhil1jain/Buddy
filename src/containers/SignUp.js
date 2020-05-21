@@ -48,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = (props) => {
   const { signDataDispatch, errorMessage, isSignUpSuccess } = props;
-  console.log("errorMessage", errorMessage);
   const classes = useStyles();
 
   useEffect(() => {
@@ -56,11 +55,28 @@ const SignUp = (props) => {
       props.history.push("/");
     }
   });
-
+  const [error, setError] = useState(null);
   const [emailData, setEmailData] = useState(null);
   const [passwordData, setPasswordData] = useState(null);
-  const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  function handleValidation() {
+    let formIsValid = true;
+
+    //Name
+    if (firstName === "") {
+      formIsValid = false;
+      setError("Name cannot be empty");
+    }
+
+    if (typeof firstName !== "string") {
+      formIsValid = false;
+      setError("Only Letters");
+    }
+
+    return formIsValid;
+  }
 
   const redirectToSignInButtonHandler = () => {
     props.history.push("/");
@@ -69,14 +85,17 @@ const SignUp = (props) => {
   const signUpButtonClickHandler = (event) => {
     event.preventDefault();
     // props.history.push("/");
-    const userData = {
-      email: emailData,
-      password: passwordData,
-      firstName: firstName,
-      lastName: lastName,
-      isSignUp: true,
-    };
-    signDataDispatch(userData);
+    const isValid = handleValidation();
+    if (isValid) {
+      const userData = {
+        email: emailData,
+        password: passwordData,
+        firstName: firstName,
+        lastName: lastName,
+        isSignUp: true,
+      };
+      signDataDispatch(userData);
+    }
   };
 
   const firstNameHandler = (event) => {
@@ -103,6 +122,7 @@ const SignUp = (props) => {
           Sign up
         </Typography>
         {errorMessage}
+        {error ? `Error: ${error}` : null}
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
