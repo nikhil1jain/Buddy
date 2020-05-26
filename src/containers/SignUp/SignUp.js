@@ -11,7 +11,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { signUpAction } from "../store/actions";
+import { signUpAction } from "../../store/actions";
 
 function Copyright() {
   return (
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignUp = (props) => {
-  const { signDataDispatch, errorMessage, isSignUpSuccess } = props;
+  const { signDataDispatch, errorMsg, isSignUpSuccess } = props;
   const classes = useStyles();
 
   useEffect(() => {
@@ -55,25 +55,55 @@ const SignUp = (props) => {
       props.history.push("/");
     }
   });
-  const [error, setError] = useState(null);
-  const [emailData, setEmailData] = useState(null);
-  const [passwordData, setPasswordData] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [emailData, setEmailData] = useState("");
+  const [passwordData, setPasswordData] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
   function handleValidation() {
     let formIsValid = true;
+    let errorMessage = null;
+    let errorCode = null;
+    const atPosition = emailData.indexOf("@");
+    const dotPosition = emailData.indexOf(".");
 
     //Name
-    if (firstName === "") {
+    if (
+      firstName.length < 1 ||
+      firstName.length > 10 ||
+      !firstName.match(/^[a-zA-Z]+$/)
+    ) {
       formIsValid = false;
-      setError("Name cannot be empty");
+      errorMessage = "Please enter valid First Name";
+      errorCode = "INVALID_FIRST_NAME";
+    } else if (
+      lastName.length < 1 ||
+      firstName.length > 10 ||
+      !lastName.match(/^[a-zA-Z]+$/)
+    ) {
+      formIsValid = false;
+      errorMessage = "Please enter valid Last Name";
+      errorCode = "INVALID_LAST_NAME";
+    } else if (
+      emailData.length < 1 ||
+      atPosition < 1 ||
+      dotPosition <= atPosition + 2 ||
+      dotPosition === emailData.length - 1
+    ) {
+      formIsValid = false;
+      errorMessage = "Please enter valid Email";
+      errorCode = "INVALID_EMAIL";
+    } else if (passwordData.length < 1 || passwordData.length > 15) {
+      formIsValid = false;
+      errorMessage = "Please enter valid Password";
+      errorCode = "INVALID_PASSWORD";
     }
 
-    if (typeof firstName !== "string") {
-      formIsValid = false;
-      setError("Only Letters");
-    }
+    setErrorCode(errorCode);
+    setErrorMessage(errorMessage);
 
     return formIsValid;
   }
@@ -121,8 +151,8 @@ const SignUp = (props) => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        {errorMessage}
-        {error ? `Error: ${error}` : null}
+        {errorMsg ? `Error: ${errorMsg}` : null}
+        {errorMessage ? `Error: ${errorMessage}` : null}
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -136,6 +166,7 @@ const SignUp = (props) => {
                 label="First Name"
                 autoFocus
                 onChange={firstNameHandler}
+                error={errorCode === "INVALID_FIRST_NAME"}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -148,6 +179,7 @@ const SignUp = (props) => {
                 name="lastName"
                 autoComplete="lname"
                 onChange={lastNameHandler}
+                error={errorCode === "INVALID_LAST_NAME"}
               />
             </Grid>
             <Grid item xs={12}>
@@ -160,6 +192,7 @@ const SignUp = (props) => {
                 name="email"
                 autoComplete="email"
                 onChange={emailDataHandler}
+                error={errorCode === "INVALID_EMAIL"}
               />
             </Grid>
             <Grid item xs={12}>
@@ -173,6 +206,7 @@ const SignUp = (props) => {
                 id="password"
                 autoComplete="current-password"
                 onChange={passwordDataHandler}
+                error={errorCode === "INVALID_PASSWORD"}
               />
             </Grid>
           </Grid>
@@ -213,7 +247,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => {
   return {
-    errorMessage: state.signUpError,
+    errorMsg: state.signUpError,
     isSignUpSuccess: state.isSignUpSuccess,
   };
 };

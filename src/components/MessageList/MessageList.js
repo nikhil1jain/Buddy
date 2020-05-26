@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
-import Message from "../components/message";
+import Message from "../Message/Message";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChatArea = (props) => {
+const MessageList = (props) => {
   const classes = useStyles();
   const { conversations } = props;
 
@@ -29,4 +29,4 @@ const ChatArea = (props) => {
   );
 };
 
-export default ChatArea;
+export default MessageList;

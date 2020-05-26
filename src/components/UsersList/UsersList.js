@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
-import User from "../components/user";
+import User from "../User/User";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserListComponent = (props) => {
+const UserList = (props) => {
   const { userList } = props;
   const classes = useStyles();
 
@@ -29,4 +29,4 @@ const UserListComponent = (props) => {
   );
 };
 
-export default UserListComponent;
+export default UserList;

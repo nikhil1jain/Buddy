@@ -1,24 +1,12 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import UsersListComponent from "../components/UsersListComponent";
-import ChatArea from "../components/ChatArea";
-import ChatInput from "../components/ChatInput";
-import { postMessageData, refreshChat, logout } from "../store/actions";
+
+import { postMessageData, refreshChat, logout } from "../../store/actions";
+import AppBarHeader from "../../components/AppBarHeader/AppBarHeader";
+import AppDrawer from "../../components/AppDrawer/AppDrawer";
+import ChatArea from "../../components/ChatArea/ChatArea";
 
 const drawerWidth = 240;
 
@@ -112,7 +100,9 @@ const Dashboard = (props) => {
     logoutDispatch,
   } = props;
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+
+  const [open, setOpen] = React.useState(false);
+
   useEffect(() => {
     if (!isLoggedIn) {
       props.history.push("/");
@@ -130,21 +120,6 @@ const Dashboard = (props) => {
       clearInterval(timer);
     };
   });
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  const getLoggedInUserName = () => {
-    const userName = userList[loggedInUser.email].firstName;
-    return `${userName}'s Dashboard`;
-  };
-
-  const logoutButtonHandler = () => {
-    logoutDispatch();
-  };
 
   const inputMessageData = (inputMsgData) => {
     if (
@@ -164,78 +139,25 @@ const Dashboard = (props) => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
-      >
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
-            {userList &&
-            loggedInUser &&
-            loggedInUser.email &&
-            userList[loggedInUser.email]
-              ? getLoggedInUserName()
-              : "Dashboard"}
-          </Typography>
-          <IconButton color="inherit" onClick={logoutButtonHandler}>
-            <ExitToAppIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
+      <AppBarHeader
+        classes={classes}
         open={open}
-      >
-        <div className={classes.toolbarIcon} onClick={handleDrawerClose}>
-          <IconButton>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        {/* <List> */}
-        <UsersListComponent userList={userList} />
-        {/* </List> */}
-        <Divider />
-        {/* <List>{secondaryListItems}</List> */}
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <ChatArea conversations={conversations} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              {/* <Paper className={classes.paper}> */}
-              <ChatInput inputMessageData={inputMessageData} />
-              {/* </Paper> */}
-            </Grid>
-          </Grid>
-        </Container>
-      </main>
+        setOpen={setOpen}
+        userList={userList}
+        loggedInUser={loggedInUser}
+        logoutDispatch={logoutDispatch}
+      />
+      <AppDrawer
+        classes={classes}
+        userList={userList}
+        open={open}
+        setOpen={setOpen}
+      />
+      <ChatArea
+        classes={classes}
+        conversations={conversations}
+        inputMessageData={inputMessageData}
+      />
     </div>
   );
 };

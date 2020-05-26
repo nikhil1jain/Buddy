@@ -7,7 +7,7 @@ import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 
-const message = (props) => {
+const Message = (props) => {
   const { classes, messageDetails } = props;
   return (
     <React.Fragment>
@@ -36,4 +36,4 @@ const message = (props) => {
   );
 };
 
-export default message;
+export default Message;

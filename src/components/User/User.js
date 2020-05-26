@@ -4,7 +4,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 
-const user = (props) => {
+const User = (props) => {
   const { userDetails } = props;
   return (
     <ListItem button>
@@ -16,4 +16,4 @@ const user = (props) => {
   );
 };
 
-export default user;
+export default User;
