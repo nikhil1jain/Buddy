@@ -11,7 +11,7 @@ const Message = (props) => {
   const { classes, messageDetails } = props;
   return (
     <React.Fragment>
-      <ListItem alignItems="flex-start">
+      <ListItem alignItems="flex-start" data-test="messageItem">
         <ListItemAvatar>
           <Avatar alt="Remy Sharp" className={classes.black}>
             {messageDetails.name.charAt(0)}

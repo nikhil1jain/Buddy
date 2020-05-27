@@ -7,6 +7,12 @@ import { postMessageData, refreshChat, logout } from "../../store/actions";
 import AppBarHeader from "../../components/AppBarHeader/AppBarHeader";
 import AppDrawer from "../../components/AppDrawer/AppDrawer";
 import ChatArea from "../../components/ChatArea/ChatArea";
+import {
+  selectLoggedInUser,
+  selectIsLoggedIn,
+  selectUserList,
+  selectConversation,
+} from "../../store/selectors";
 
 const drawerWidth = 240;
 
@@ -171,10 +177,10 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => {
   return {
-    loggedInUser: state.loggedInUser,
-    userList: state.userList,
-    isLoggedIn: state.isLoggedIn,
-    conversations: state.conversations,
+    loggedInUser: selectLoggedInUser(state),
+    userList: selectUserList(state),
+    isLoggedIn: selectIsLoggedIn(state),
+    conversations: selectConversation(state),
   };
 };
 

@@ -7,7 +7,7 @@ import Avatar from "@material-ui/core/Avatar";
 const User = (props) => {
   const { userDetails } = props;
   return (
-    <ListItem button>
+    <ListItem button data-test="userItem">
       <ListItemAvatar>
         <Avatar>{userDetails.firstName.charAt(0)}</Avatar>
       </ListItemAvatar>

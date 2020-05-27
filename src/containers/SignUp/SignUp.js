@@ -12,6 +12,10 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { signUpAction } from "../../store/actions";
+import {
+  selectSignUpError,
+  selectIsSignUpSuccess,
+} from "../../store/selectors";
 
 function Copyright() {
   return (
@@ -247,8 +251,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => {
   return {
-    errorMsg: state.signUpError,
-    isSignUpSuccess: state.isSignUpSuccess,
+    errorMsg: selectSignUpError(state),
+    isSignUpSuccess: selectIsSignUpSuccess(state),
   };
 };
 
